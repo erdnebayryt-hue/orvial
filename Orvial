@@ -1,0 +1,331 @@
+# orvial
+ORVIA Online Store
+
+
+<!DOCTYPE html>
+
+<html lang="mn">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ORVIA — Digital Store</title>
+
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f7f7f5;color:#171717}
+
+header{height:75px;padding:0 6%;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #eee;position:sticky;top:0;z-index:10}
+
+.logo{font-size:27px;font-weight:900;letter-spacing:3px}
+
+nav{display:flex;gap:24px;align-items:center}
+
+nav a{color:#333;text-decoration:none;font-size:14px}
+
+.cart{border:1px solid #ddd;border-radius:30px;padding:10px 16px;background:white;cursor:pointer}
+
+.hero{background:#171717;color:white;padding:75px 7%;min-height:330px;display:flex;align-items:center;justify-content:space-between;gap:25px}
+
+.hero h1{font-size:clamp(38px,7vw,65px);line-height:1.08;letter-spacing:-2px}
+
+.hero p{color:#bbb;margin-top:18px;line-height:1.7}
+
+.hero button,.buy{background:#fff;color:#111;border:0;border-radius:7px;padding:14px 22px;margin-top:25px;font-weight:700;cursor:pointer}
+
+.hero-side{font-size:100px;opacity:.9}
+
+section{padding:55px 7%}
+
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+
+.section-head h2{font-size:28px}
+
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+
+.product{background:white;border:1px solid #eee;border-radius:12px;overflow:hidden}
+
+.cover{height:190px;background:#e9e9e6;display:flex;align-items:center;justify-content:center;font-size:55px}
+
+.product-info{padding:18px}
+
+.product-info small{color:#888}
+
+.product-info h3{margin:9px 0;font-size:18px}
+
+.price{font-weight:800;font-size:18px}
+
+.buy{background:#171717;color:white;width:100%;margin-top:16px}
+
+.buy:hover{background:#444}
+
+.about{background:#eee;text-align:center}
+
+.about p{max-width:550px;margin:15px auto;line-height:1.8;color:#555}
+
+footer{background:#171717;color:#aaa;text-align:center;padding:35px;font-size:13px}
+
+.modal{display:none;position:fixed;inset:0;background:#0009;z-index:20;align-items:center;justify-content:center;padding:15px}
+
+.modal-box{background:white;border-radius:14px;padding:25px;width:100%;max-width:420px;max-height:85vh;overflow:auto}
+
+.modal-box h2{margin-bottom:18px}
+
+.modal-box input{width:100%;padding:13px;margin:8px 0;border:1px solid #ddd;border-radius:7px}
+
+.modal-box button{padding:13px;border:0;border-radius:7px;background:#171717;color:white;width:100%;margin-top:12px}
+
+.close{float:right;background:#eee!important;color:#111!important;width:auto!important;padding:7px 12px!important;margin:0!important}
+
+.cart-item{padding:12px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between}
+
+@media(max-width:650px){
+
+ nav a{display:none}
+
+ .hero{min-height:300px}
+
+ .hero-side{font-size:65px}
+
+ .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+
+ .cover{height:140px;font-size:42px}
+
+ .product-info{padding:12px}
+
+ .product-info h3{font-size:15px}
+
+ section{padding:38px 5%}
+
+ header{padding:0 5%}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+ <div class="logo">ORVIA.</div>
+
+ <nav>
+
+  <a href="#home">Нүүр</a>
+
+  <a href="#shop">Дэлгүүр</a>
+
+  <a href="#about">Бидний тухай</a>
+
+  <button class="cart" onclick="openCart()">🛒 <span id="count">0</span></button>
+
+ </nav>
+
+</header>
+
+<div class="hero" id="home">
+
+ <div>
+
+  <h1>Шинэ мэдлэг.<br>Шинэ боломж.</h1>
+
+  <p>Таны хөгжилд зориулсан дижитал бүтээгдэхүүнүүд<br>нэг дор.</p>
+
+  <button onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Дэлгүүр үзэх →</button>
+
+ </div>
+
+ <div class="hero-side">✦</div>
+
+</div>
+
+<section id="shop">
+
+ <div class="section-head">
+
+  <h2>Бүтээгдэхүүн</h2>
+
+  <span>ORVIA STORE</span>
+
+ </div>
+
+ <div class="products" id="products"></div>
+
+</section>
+
+<section class="about" id="about">
+
+ <h2>ORVIA гэж юу вэ?</h2>
+
+ <p>Бид таны мэдлэг, бүтээмж, бизнесийн хөгжилд туслах дижитал бүтээгдэхүүнүүдийг хүргэж байна.</p>
+
+ <b>Simple. Smart. Digital.</b>
+
+</section>
+
+<footer>
+
+ <div class="logo" style="color:white">ORVIA.</div>
+
+ <p style="margin-top:12px">© 2026 ORVIA. All rights reserved.</p>
+
+</footer>
+
+<div class="modal" id="cartModal">
+
+ <div class="modal-box">
+
+  <button class="close" onclick="closeModal('cartModal')">✕</button>
+
+  <h2>Таны сагс</h2>
+
+  <div id="cartItems"></div>
+
+  <h3 id="total" style="margin-top:15px">Нийт: 0₮</h3>
+
+  <button onclick="checkout()">Захиалга өгөх</button>
+
+ </div>
+
+</div>
+
+<div class="modal" id="orderModal">
+
+ <div class="modal-box">
+
+  <button class="close" onclick="closeModal('orderModal')">✕</button>
+
+  <h2>Захиалгын мэдээлэл</h2>
+
+  <input id="customerName" placeholder="Таны нэр">
+
+  <input id="customerPhone" placeholder="Утасны дугаар">
+
+  <p style="font-size:13px;color:#777;margin-top:10px">Захиалгын мэдээллийг бөглөсний дараа бид төлбөрийн мэдээллийг өгнө.</p>
+
+  <button onclick="sendOrder()">Захиалга илгээх</button>
+
+ </div>
+
+</div>
+
+<script>
+
+const products=[
+
+ {id:1,name:"AI Business Toolkit",category:"Бизнес",price:15000,icon:"📘"},
+
+ {id:2,name:"200 AI Prompts",category:"AI & Technology",price:10000,icon:"🤖"},
+
+ {id:3,name:"Social Media Toolkit",category:"Маркетинг",price:12000,icon:"📱"},
+
+ {id:4,name:"ChatGPT Beginner Guide",category:"Сургалт",price:9000,icon:"📚"},
+
+ {id:5,name:"Digital Business Guide",category:"Бизнес",price:18000,icon:"💼"},
+
+ {id:6,name:"Productivity Toolkit",category:"Хөгжил",price:8000,icon:"⚡"}
+
+];
+
+let cart=[];
+
+function money(n){return n.toLocaleString("mn-MN")+"₮"}
+
+function renderProducts(){
+
+ document.getElementById("products").innerHTML=products.map(p=>`
+
+ <div class="product">
+
+  <div class="cover">${p.icon}</div>
+
+  <div class="product-info">
+
+   <small>${p.category}</small>
+
+   <h3>${p.name}</h3>
+
+   <div class="price">${money(p.price)}</div>
+
+   <button class="buy" onclick="addCart(${p.id})">Сагсанд нэмэх</button>
+
+  </div>
+
+ </div>`).join("");
+
+}
+
+function addCart(id){
+
+ const p=products.find(x=>x.id===id);
+
+ cart.push(p);
+
+ updateCart();
+
+ alert("Сагсанд нэмэгдлээ!");
+
+}
+
+function updateCart(){
+
+ document.getElementById("count").textContent=cart.length;
+
+ document.getElementById("cartItems").innerHTML=cart.length?
+
+ cart.map((p,i)=>`<div class="cart-item"><span>${p.name}</span><b>${money(p.price)} <button onclick="removeItem(${i})">✕</button></b></div>`).join("")
+
+ :"Таны сагс хоосон байна.";
+
+ document.getElementById("total").textContent="Нийт: "+money(cart.reduce((s,p)=>s+p.price,0));
+
+}
+
+function removeItem(i){cart.splice(i,1);updateCart()}
+
+function openCart(){updateCart();document.getElementById("cartModal").style.display="flex"}
+
+function closeModal(id){document.getElementById(id).style.display="none"}
+
+function checkout(){
+
+ if(!cart.length){alert("Эхлээд бүтээгдэхүүн сонгоно уу.");return}
+
+ closeModal("cartModal");
+
+ document.getElementById("orderModal").style.display="flex";
+
+}
+
+function sendOrder(){
+
+ const name=document.getElementById("customerName").value.trim();
+
+ const phone=document.getElementById("customerPhone").value.trim();
+
+ if(!name||!phone){alert("Нэр болон утсаа оруулна уу.");return}
+
+ const items=cart.map(p=>p.name).join(", ");
+
+ const total=money(cart.reduce((s,p)=>s+p.price,0));
+
+ const message=`ORVIA захиалга\nНэр: ${name}\nУтас: ${phone}\nБүтээгдэхүүн: ${items}\nНийт: ${total}`;
+
+ alert("Энэ бол туршилтын хувилбар. Захиалга серверт хадгалагдаагүй байна.\n\n"+message);
+
+}
+
+renderProducts();
+
+</script>
+
+</body>
+
+</html>

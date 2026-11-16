@@ -1,2 +1,0 @@
-# orvial
-ORVIA Online Store
